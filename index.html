@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f2d">
+<title>TapMe Card</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #6c63ff;
+    --bg: #0f0f2d;
+    --bg2: #1a1a3e;
+    --card-bg: #1c1c3a;
+    --text: #ffffff;
+    --muted: rgba(255,255,255,0.45);
+    --border: rgba(255,255,255,0.1);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+
+  .page { width: 100%; max-width: 400px; }
+
+  /* Hero card */
+  .hero {
+    border-radius: 24px;
+    padding: 28px 24px 24px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before, .hero::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .hero::before { width: 220px; height: 220px; top: -60px; right: -60px; }
+  .hero::after  { width: 160px; height: 160px; bottom: -40px; left: -40px; }
+
+  .hero-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 600;
+    color: #fff;
+    background: rgba(255,255,255,0.2);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .nfc-icon { opacity: 0.5; }
+  .nfc-icon svg { width: 24px; height: 24px; fill: white; }
+
+  .hero-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .hero-role { font-size: 15px; opacity: 0.65; margin-bottom: 2px; }
+  .hero-company { font-size: 13px; opacity: 0.4; }
+
+  /* Contacts card */
+  .card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 0.5px solid var(--border);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .card-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin-bottom: 12px;
+  }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    text-decoration: none;
+    color: var(--text);
+    border-bottom: 0.5px solid var(--border);
+  }
+  .contact-row:last-child { border-bottom: none; }
+  .contact-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 17px;
+  }
+  .contact-text { flex: 1; }
+  .contact-label { font-size: 11px; opacity: 0.4; margin-bottom: 1px; }
+  .contact-value { font-size: 14px; font-weight: 500; }
+  .contact-arrow { opacity: 0.3; font-size: 14px; }
+
+  /* Buttons */
+  .btn-primary {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 15px;
+    border-radius: 16px;
+    border: none;
+    font-size: 16px; font-weight: 600;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 10px;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:active { opacity: 0.85; }
+
+  .btn-secondary {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 14px;
+    border-radius: 16px;
+    border: 0.5px solid var(--border);
+    background: rgba(255,255,255,0.05);
+    font-size: 15px; font-weight: 500;
+    color: rgba(255,255,255,0.75);
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: opacity 0.15s;
+  }
+
+  /* Links row */
+  .links-row {
+    display: flex; gap: 10px; margin-bottom: 12px;
+  }
+  .link-chip {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    padding: 12px 8px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 0.5px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 11px;
+    opacity: 0.8;
+  }
+  .link-chip span { font-size: 20px; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    opacity: 0.25;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+    background: var(--accent);
+    color: white; font-size: 14px; font-weight: 500;
+    padding: 10px 24px; border-radius: 100px;
+    opacity: 0; transition: opacity 0.2s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+
+  /* Not found */
+  .empty {
+    text-align: center; padding: 60px 24px;
+  }
+  .empty h2 { font-size: 20px; margin-bottom: 8px; }
+  .empty p { opacity: 0.45; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="page" id="root">
+  <div class="empty">
+    <h2>Загрузка...</h2>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function getCard() {
+  const params = new URLSearchParams(location.search);
+  const encoded = params.get('d');
+  if (!encoded) return null;
+  try {
+    const json = atob(encoded.replace(/-/g, '+').replace(/_/g, '/'));
+    return JSON.parse(json);
+  } catch { return null; }
+}
+
+function initials(name) {
+  return name.split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase() || '?';
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(0,2), 16);
+  const g = parseInt(hex.slice(2,4), 16);
+  const b = parseInt(hex.slice(4,6), 16);
+  return `${r},${g},${b}`;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function makeVCard(c) {
+  const lines = ['BEGIN:VCARD', 'VERSION:3.0'];
+  if (c.name)     lines.push(`FN:${c.name}`);
+  if (c.role)     lines.push(`TITLE:${c.role}`);
+  if (c.company)  lines.push(`ORG:${c.company}`);
+  if (c.email)    lines.push(`EMAIL:${c.email}`);
+  if (c.phone)    lines.push(`TEL:${c.phone}`);
+  if (c.website)  lines.push(`URL:${c.website}`);
+  lines.push('END:VCARD');
+  return lines.join('\n');
+}
+
+function downloadVCard(c) {
+  const blob = new Blob([makeVCard(c)], { type: 'text/vcard' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${c.name || 'contact'}.vcf`;
+  a.click();
+  showToast('Контакт скачан');
+}
+
+function copyText(text) {
+  navigator.clipboard?.writeText(text).then(() => showToast('Скопировано!')).catch(() => showToast(text));
+}
+
+function render(c) {
+  const accent = c.colorHex || '6c63ff';
+  const rgb = hexToRgb(accent);
+  document.documentElement.style.setProperty('--accent', `#${accent}`);
+  document.title = c.name ? `${c.name} — TapMe` : 'TapMe Card';
+
+  const hasLinks = c.linkedin || c.github || c.website || c.behance;
+  const hasContacts = c.email || c.phone;
+
+  let contactsHTML = '';
+  if (c.email) contactsHTML += row('mailto:' + c.email, '✉️', 'Email', c.email);
+  if (c.phone) contactsHTML += row('tel:' + c.phone, '📞', 'Телефон', c.phone);
+
+  let linksHTML = '';
+  if (c.linkedin) linksHTML += chip('https://' + c.linkedin.replace(/^https?:\/\//, ''), '💼', 'LinkedIn');
+  if (c.github)   linksHTML += chip('https://' + c.github.replace(/^https?:\/\//, ''), '🐙', 'GitHub');
+  if (c.website)  linksHTML += chip(c.website.startsWith('http') ? c.website : 'https://' + c.website, '🌐', 'Сайт');
+  if (c.behance)  linksHTML += chip('https://' + c.behance.replace(/^https?:\/\//, ''), '🎨', 'Behance');
+
+  document.getElementById('root').innerHTML = `
+    <div class="hero" style="background:linear-gradient(135deg,#${accent},rgba(${rgb},0.6))">
+      <div class="hero-top">
+        <div class="avatar" id="av" style="background:rgba(255,255,255,0.2)">${initials(c.name || '')}</div>
+        <div class="nfc-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 14.5c-2.49 0-4.5-2.01-4.5-4.5S11.51 7.5 14 7.5V9c-1.66 0-3 1.34-3 3s1.34 3 3 3v1.5zm3-3c0 1.66-1.34 3-3 3V15c.83 0 1.5-.67 1.5-1.5S14.83 12 14 12v-1.5c1.66 0 3 1.34 3 3z"/></svg>
+        </div>
+      </div>
+      <div class="hero-name">${c.name || 'Без имени'}</div>
+      ${c.role    ? `<div class="hero-role">${c.role}</div>` : ''}
+      ${c.company ? `<div class="hero-company">${c.company}</div>` : ''}
+    </div>
+
+    ${hasContacts ? `
+    <div class="card">
+      <div class="card-label">Контакты</div>
+      ${contactsHTML}
+    </div>` : ''}
+
+    ${hasLinks ? `<div class="links-row">${linksHTML}</div>` : ''}
+
+    <button class="btn-primary" style="background:#${accent}" onclick="downloadVCard(window.__card)">
+      👤 Сохранить контакт
+    </button>
+    <button class="btn-secondary" onclick="copyText(location.href)">
+      🔗 Скопировать ссылку
+    </button>
+
+    <div class="footer">Создано с TapMe</div>
+  `;
+
+  window.__card = c;
+}
+
+function row(href, icon, label, value) {
+  return `
+    <a class="contact-row" href="${href}">
+      <div class="contact-icon" style="background:rgba(var(--accent),0.15);font-size:18px">${icon}</div>
+      <div class="contact-text">
+        <div class="contact-label">${label}</div>
+        <div class="contact-value">${value}</div>
+      </div>
+      <div class="contact-arrow">›</div>
+    </a>`;
+}
+
+function chip(href, icon, label) {
+  return `<a class="link-chip" href="${href}" target="_blank" rel="noopener"><span>${icon}</span>${label}</a>`;
+}
+
+function showEmpty() {
+  document.getElementById('root').innerHTML = `
+    <div class="empty">
+      <div style="font-size:48px;margin-bottom:16px">📇</div>
+      <h2>Карточка не найдена</h2>
+      <p>Попроси человека поделиться актуальной ссылкой из приложения TapMe</p>
+    </div>`;
+}
+
+const card = getCard();
+if (card) render(card);
+else showEmpty();
+</script>
+</body>
+</html>
