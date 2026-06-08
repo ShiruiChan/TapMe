@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Users } from 'lucide-react'
+import { Users, Search, Mail, Phone, Send, Instagram, Linkedin, Github, Globe, Share2, UserPlus, MapPin, type LucideIcon } from 'lucide-react'
 import type { TabModule, TabContext } from './registry'
 import { useTeamMembers } from '@/api/directory'
 import type { Card } from '@/lib/database.types'
@@ -19,12 +19,12 @@ function MemberModal({ card }: { card: Card }) {
   const { closeModal } = useModal()
 
   const links = [
-    card.telegram && { icon: '✈️', label: 'Telegram', href: `https://t.me/${card.telegram.replace('@','')}` },
-    card.instagram && { icon: '📸', label: 'Instagram', href: `https://instagram.com/${card.instagram.replace('@','')}` },
-    card.linkedin && { icon: '💼', label: 'LinkedIn', href: card.linkedin.startsWith('http') ? card.linkedin : `https://linkedin.com/in/${card.linkedin}` },
-    card.github && { icon: '🐙', label: 'GitHub', href: `https://github.com/${card.github}` },
-    card.website && { icon: '🌐', label: 'Сайт', href: card.website },
-  ].filter(Boolean) as { icon: string; label: string; href: string }[]
+    card.telegram  && { Icon: Send,       label: 'Telegram',  href: `https://t.me/${card.telegram.replace('@','')}` },
+    card.instagram && { Icon: Instagram,  label: 'Instagram', href: `https://instagram.com/${card.instagram.replace('@','')}` },
+    card.linkedin  && { Icon: Linkedin,   label: 'LinkedIn',  href: card.linkedin.startsWith('http') ? card.linkedin : `https://linkedin.com/in/${card.linkedin}` },
+    card.github    && { Icon: Github,     label: 'GitHub',    href: `https://github.com/${card.github}` },
+    card.website   && { Icon: Globe,      label: 'Сайт',      href: card.website },
+  ].filter(Boolean) as { Icon: LucideIcon; label: string; href: string }[]
 
   const skills = (card.skills || '').split(',').map(s => s.trim()).filter(Boolean)
 
@@ -76,14 +76,14 @@ function MemberModal({ card }: { card: Card }) {
 
       {card.email && (
         <a href={`mailto:${card.email}`} className="contact-row">
-          <div className="c-icon">📧</div>
+          <div className="c-icon"><Mail size={17} /></div>
           <div className="c-text"><div className="c-lbl">Email</div><div className="c-val">{card.email}</div></div>
           <div className="c-arr">›</div>
         </a>
       )}
       {card.phone && (
         <a href={`tel:${card.phone}`} className="contact-row">
-          <div className="c-icon">📱</div>
+          <div className="c-icon"><Phone size={17} /></div>
           <div className="c-text"><div className="c-lbl">Телефон</div><div className="c-val">{card.phone}</div></div>
           <div className="c-arr">›</div>
         </a>
@@ -93,7 +93,7 @@ function MemberModal({ card }: { card: Card }) {
         <div className="link-chips" style={{ marginTop: 12, marginBottom: 16 }}>
           {links.map(l => (
             <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="link-chip">
-              <span className="lc-icon">{l.icon}</span>
+              <l.Icon size={20} />
               <span>{l.label}</span>
             </a>
           ))}
@@ -105,8 +105,8 @@ function MemberModal({ card }: { card: Card }) {
       </div>
 
       <div className="gap-10">
-        <button className="btn btn-primary" onClick={copyLink}>🔗&nbsp; Скопировать ссылку</button>
-        <button className="btn btn-secondary" onClick={saveContact}>👤&nbsp; Сохранить контакт</button>
+        <button className="btn btn-primary" onClick={copyLink}><Share2 size={16} /> Скопировать ссылку</button>
+        <button className="btn btn-secondary" onClick={saveContact}><UserPlus size={16} /> Сохранить контакт</button>
       </div>
     </div>
   )
@@ -146,7 +146,7 @@ function Directory({ ctx: _ctx }: { ctx: TabContext }) {
       </div>
 
       <div className="search-wrap">
-        <span className="search-ico">🔍</span>
+        <Search className="search-ico" size={16} />
         <input
           placeholder="Поиск по имени, должности, навыкам"
           value={query}
@@ -162,7 +162,12 @@ function Directory({ ctx: _ctx }: { ctx: TabContext }) {
         </div>
       ) : filtered.length === 0 ? (
         <div className="empty-state">
-          <div className="e-icon">{query ? '🔍' : '🚀'}</div>
+          <div style={{ color: 'var(--muted2)', marginBottom: 16 }}>
+            {query
+              ? <Search size={48} strokeWidth={1.5} />
+              : <Users size={48} strokeWidth={1.5} />
+            }
+          </div>
           <h3>{query ? 'Никого не нашлось' : 'Пока только ты'}</h3>
           <p>{query ? 'Попробуй другой запрос' : 'Зарегистрируй коллег и они появятся здесь'}</p>
         </div>
@@ -192,7 +197,11 @@ function Directory({ ctx: _ctx }: { ctx: TabContext }) {
                 </div>
                 <div className="dir-card-name">{c.name || m.profile.full_name || '—'}</div>
                 <div className="dir-card-role">{c.role || m.profile.department || '—'}</div>
-                {c.location && <div style={{ fontSize: 11, color: 'var(--muted2)' }}>📍 {c.location}</div>}
+                {c.location && (
+                  <div style={{ fontSize: 11, color: 'var(--muted2)', display: 'flex', alignItems: 'center', gap: 3 }}>
+                    <MapPin size={10} /> {c.location}
+                  </div>
+                )}
               </div>
             )
           })}

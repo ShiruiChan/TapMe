@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Send, Instagram, Linkedin, Github, Globe, MessageCircle, Palette, Mail, Phone, MapPin, UserPlus, Share2, type LucideIcon } from 'lucide-react'
 import type { Card } from '@/lib/database.types'
 import { trackEvent } from '@/api/events'
 import { downloadVCard } from '@/lib/vcard'
@@ -6,14 +7,14 @@ import { hexRgb, initials } from '@/lib/utils'
 import { slugUrl } from '@/lib/b64'
 import { useToast } from '@/components/ui/Toast'
 
-const SOCIAL_LINKS: { key: keyof Card; icon: string; label: string; baseUrl?: string }[] = [
-  { key: 'telegram', icon: '✈️', label: 'Telegram', baseUrl: 'https://t.me/' },
-  { key: 'instagram', icon: '📸', label: 'Instagram', baseUrl: 'https://instagram.com/' },
-  { key: 'vk', icon: '💙', label: 'ВКонтакте', baseUrl: 'https://vk.com/' },
-  { key: 'linkedin', icon: '💼', label: 'LinkedIn', baseUrl: 'https://linkedin.com/in/' },
-  { key: 'github', icon: '🐙', label: 'GitHub', baseUrl: 'https://github.com/' },
-  { key: 'behance', icon: '🎨', label: 'Behance', baseUrl: 'https://behance.net/' },
-  { key: 'website', icon: '🌐', label: 'Сайт' },
+const SOCIAL_LINKS: { key: keyof Card; Icon: LucideIcon; label: string; baseUrl?: string }[] = [
+  { key: 'telegram',  Icon: Send,          label: 'Telegram',   baseUrl: 'https://t.me/' },
+  { key: 'instagram', Icon: Instagram,     label: 'Instagram',  baseUrl: 'https://instagram.com/' },
+  { key: 'vk',        Icon: MessageCircle, label: 'ВКонтакте',  baseUrl: 'https://vk.com/' },
+  { key: 'linkedin',  Icon: Linkedin,      label: 'LinkedIn',   baseUrl: 'https://linkedin.com/in/' },
+  { key: 'github',    Icon: Github,        label: 'GitHub',     baseUrl: 'https://github.com/' },
+  { key: 'behance',   Icon: Palette,       label: 'Behance',    baseUrl: 'https://behance.net/' },
+  { key: 'website',   Icon: Globe,         label: 'Сайт' },
 ]
 
 export default function PublicCardView({ card }: { card: Card }) {
@@ -37,7 +38,7 @@ export default function PublicCardView({ card }: { card: Card }) {
       const href = s.baseUrl
         ? s.baseUrl + val.replace(/^@/, '').replace(/^https?:\/\/[^/]+\//, '')
         : val.startsWith('http') ? val : `https://${val}`
-      return { ...s, href }
+      return { key: s.key, Icon: s.Icon, label: s.label, href }
     })
 
   async function saveContact() {
@@ -88,7 +89,9 @@ export default function PublicCardView({ card }: { card: Card }) {
         {card.company && <div className="pub-company">{card.company}</div>}
         {card.tagline && <div className="pub-tagline">"{card.tagline}"</div>}
         {card.location && (
-          <div style={{ fontSize: 12, opacity: 0.5, marginTop: 8 }}>📍 {card.location}</div>
+          <div style={{ fontSize: 12, opacity: 0.5, marginTop: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <MapPin size={12} /> {card.location}
+          </div>
         )}
       </div>
 
@@ -115,14 +118,14 @@ export default function PublicCardView({ card }: { card: Card }) {
           <div className="card-label">Контакты</div>
           {card.email && (
             <a href={`mailto:${card.email}`} className="contact-row">
-              <div className="c-icon">📧</div>
+              <div className="c-icon"><Mail size={17} /></div>
               <div className="c-text"><div className="c-lbl">Email</div><div className="c-val">{card.email}</div></div>
               <div className="c-arr">›</div>
             </a>
           )}
           {card.phone && (
             <a href={`tel:${card.phone}`} className="contact-row">
-              <div className="c-icon">📱</div>
+              <div className="c-icon"><Phone size={17} /></div>
               <div className="c-text"><div className="c-lbl">Телефон</div><div className="c-val">{card.phone}</div></div>
               <div className="c-arr">›</div>
             </a>
@@ -135,7 +138,7 @@ export default function PublicCardView({ card }: { card: Card }) {
         <div className="link-chips" style={{ marginBottom: 20 }}>
           {socialLinks.map(l => (
             <a key={l.key} href={l.href} target="_blank" rel="noopener noreferrer" className="link-chip">
-              <span className="lc-icon">{l.icon}</span>
+              <l.Icon size={20} />
               <span>{l.label}</span>
             </a>
           ))}
@@ -149,10 +152,10 @@ export default function PublicCardView({ card }: { card: Card }) {
           style={{ background: `linear-gradient(135deg,#${accent},#06b6d4)` }}
           onClick={saveContact}
         >
-          👤&nbsp; Сохранить контакт
+          <UserPlus size={18} /> Сохранить контакт
         </button>
         <button className="btn btn-secondary" onClick={share}>
-          🔗&nbsp; Поделиться
+          <Share2 size={18} /> Поделиться
         </button>
       </div>
 

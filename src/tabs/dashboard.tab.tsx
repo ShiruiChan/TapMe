@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { LayoutGrid } from 'lucide-react'
+import { LayoutGrid, Pencil, Share2, QrCode, Users, Eye, UserCheck } from 'lucide-react'
 import type { TabModule, TabContext } from './registry'
 import { Avatar } from '@/components/ui/Avatar'
 import { useModal } from '@/components/ui/Modal'
@@ -99,13 +99,15 @@ function Dashboard({ ctx }: { ctx: TabContext }) {
       {/* Actions */}
       <div className="action-grid" style={{ marginBottom: 20 }}>
         {[
-          { icon: '✏️', label: 'Редактировать', sub: 'Изменить данные', action: () => navigate('/editor') },
-          { icon: '🔗', label: 'Поделиться', sub: 'Скопировать ссылку', action: share },
-          { icon: '📱', label: 'QR-код', sub: 'Показать код', action: showQR },
-          { icon: '👥', label: 'Команда', sub: `Все коллеги`, action: () => navigate('/directory') },
+          { Icon: Pencil,  color: '#10b981', label: 'Редактировать', sub: 'Изменить данные',    action: () => navigate('/editor') },
+          { Icon: Share2,  color: '#6366f1', label: 'Поделиться',    sub: 'Скопировать ссылку', action: share },
+          { Icon: QrCode,  color: '#06b6d4', label: 'QR-код',         sub: 'Показать код',       action: showQR },
+          { Icon: Users,   color: '#8b5cf6', label: 'Команда',        sub: 'Все коллеги',        action: () => navigate('/directory') },
         ].map(a => (
           <button key={a.label} className="action-card glass-card" onClick={a.action}>
-            <div className="action-icon">{a.icon}</div>
+            <div className="action-icon" style={{ background: `${a.color}22`, color: a.color }}>
+              <a.Icon size={20} />
+            </div>
             <div className="action-label">{a.label}</div>
             <div className="action-sub">{a.sub}</div>
           </button>
@@ -118,6 +120,14 @@ function Dashboard({ ctx }: { ctx: TabContext }) {
           <div className="card-label">Последние события</div>
           {events.slice(0, 5).map(ev => (
             <div key={ev.id} className="scan-row">
+              <div style={{
+                width: 32, height: 32, borderRadius: 9, flexShrink: 0, marginRight: 4,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: ev.type === 'view' ? 'rgba(6,182,212,0.12)' : ev.type === 'save' ? 'rgba(16,185,129,0.12)' : 'rgba(99,102,241,0.12)',
+                color: ev.type === 'view' ? 'var(--accent2)' : ev.type === 'save' ? '#34d399' : 'var(--accent)',
+              }}>
+                {ev.type === 'view' ? <Eye size={14} /> : ev.type === 'save' ? <UserCheck size={14} /> : <Share2 size={14} />}
+              </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, fontWeight: 500 }}>
                   {ev.type === 'view' ? 'Просмотр карточки' : ev.type === 'save' ? 'Контакт сохранён' : 'Ссылка скопирована'}

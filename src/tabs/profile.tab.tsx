@@ -1,4 +1,4 @@
-import { UserCircle } from 'lucide-react'
+import { UserCircle, Pencil, Globe, Lock, Link2, LogOut } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import type { TabModule, TabContext } from './registry'
 import { useAuth } from '@/store/auth'
@@ -63,7 +63,7 @@ function Profile({ ctx }: { ctx: TabContext }) {
         <div className="card-label">Настройки</div>
 
         <div className="settings-row" onClick={() => navigate('/editor')}>
-          <div className="settings-icon">✏️</div>
+          <div className="settings-icon"><Pencil size={17} /></div>
           <div className="settings-info">
             <div className="settings-name">Редактировать карточку</div>
             <div className="settings-sub">Имя, контакты, соцсети</div>
@@ -72,11 +72,9 @@ function Profile({ ctx }: { ctx: TabContext }) {
         </div>
 
         <div className="settings-row" onClick={togglePrivacy}>
-          <div className="settings-icon">{card?.is_public ? '🌐' : '🔒'}</div>
+          <div className="settings-icon">{card?.is_public ? <Globe size={17} /> : <Lock size={17} />}</div>
           <div className="settings-info">
-            <div className="settings-name">
-              Видимость карточки
-            </div>
+            <div className="settings-name">Видимость карточки</div>
             <div className="settings-sub">{card?.is_public ? 'Карточка публична' : 'Карточка скрыта'}</div>
           </div>
           <div style={{
@@ -97,7 +95,7 @@ function Profile({ ctx }: { ctx: TabContext }) {
                 .then(() => toast('Ссылка скопирована!'))
             }
           }}>
-            <div className="settings-icon">🔗</div>
+            <div className="settings-icon"><Link2 size={17} /></div>
             <div className="settings-info">
               <div className="settings-name">Моя ссылка</div>
               <div className="settings-sub" style={{ wordBreak: 'break-all' }}>
@@ -113,7 +111,7 @@ function Profile({ ctx }: { ctx: TabContext }) {
       <div className="glass-card" style={{ marginBottom: 20 }}>
         <div className="card-label">Аккаунт</div>
         <div className="settings-row" onClick={signOut}>
-          <div className="settings-icon" style={{ background: 'rgba(239,68,68,0.12)', color: '#f87171' }}>🚪</div>
+          <div className="settings-icon" style={{ background: 'rgba(239,68,68,0.12)', color: '#f87171' }}><LogOut size={17} /></div>
           <div className="settings-info">
             <div className="settings-name" style={{ color: '#f87171' }}>Выйти из аккаунта</div>
             <div className="settings-sub">{profile?.email}</div>

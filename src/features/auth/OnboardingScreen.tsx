@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { CreditCard, Users, Zap, Camera, UserCircle } from 'lucide-react'
 import { useAuth } from '@/store/auth'
 import { useUpsertCard, uploadAvatar } from '@/api/cards'
 import { supabase } from '@/lib/supabase'
@@ -80,15 +81,30 @@ export default function OnboardingScreen() {
         >
           {step === 1 && (
             <div className="onb-top">
-              <div className="onb-big-icon">👋</div>
+              <div className="onb-big-icon">
+                <div style={{
+                  width: 72, height: 72, borderRadius: 22,
+                  background: 'var(--grad)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 26, fontWeight: 900, color: '#fff',
+                  boxShadow: '0 12px 40px var(--glow)',
+                  letterSpacing: '-1px',
+                }}>TM</div>
+              </div>
               <div className="onb-title">Добро пожаловать<br />в Lory.Lab</div>
               <div className="onb-sub">TapMe — цифровые визитки и управление командой</div>
-              <div className="onb-bullet"><div className="b-dot">🪪</div>
-                <div className="b-text"><strong>Цифровая визитка</strong> — делись по NFC, QR или ссылке</div></div>
-              <div className="onb-bullet"><div className="b-dot">👥</div>
-                <div className="b-text"><strong>Директория команды</strong> — все коллеги в одном месте</div></div>
-              <div className="onb-bullet"><div className="b-dot">⚡</div>
-                <div className="b-text"><strong>Аналитика</strong> — сколько раз открыли твою карточку</div></div>
+              <div className="onb-bullet">
+                <div className="b-dot"><CreditCard size={13} /></div>
+                <div className="b-text"><strong>Цифровая визитка</strong> — делись по NFC, QR или ссылке</div>
+              </div>
+              <div className="onb-bullet">
+                <div className="b-dot"><Users size={13} /></div>
+                <div className="b-text"><strong>Директория команды</strong> — все коллеги в одном месте</div>
+              </div>
+              <div className="onb-bullet">
+                <div className="b-dot"><Zap size={13} /></div>
+                <div className="b-text"><strong>Аналитика</strong> — сколько раз открыли твою карточку</div>
+              </div>
             </div>
           )}
 
@@ -102,8 +118,12 @@ export default function OnboardingScreen() {
                   style={data.avatarPreview ? { backgroundImage: `url(${data.avatarPreview})` } : undefined}
                   onClick={() => fileRef.current?.click()}
                 >
-                  {!data.avatarPreview && <span style={{ fontSize: 28 }}>🙂</span>}
-                  <div className="av-overlay">📷</div>
+                  {!data.avatarPreview && (
+                    data.name
+                      ? <span style={{ fontSize: 26, fontWeight: 700 }}>{data.name[0].toUpperCase()}</span>
+                      : <UserCircle size={32} style={{ color: 'var(--muted)' }} />
+                  )}
+                  <div className="av-overlay"><Camera size={20} /></div>
                 </div>
                 <div className="av-hint">Фото профиля</div>
                 <input
@@ -191,7 +211,7 @@ export default function OnboardingScreen() {
               onClick={finish}
               disabled={upsert.isPending}
             >
-              {upsert.isPending ? 'Сохранение...' : 'Готово — открыть дашборд 🚀'}
+              {upsert.isPending ? 'Сохранение...' : 'Готово — открыть дашборд'}
             </button>
             <button className="btn btn-ghost btn-sm" onClick={() => setStep(s => s - 1)}>← Назад</button>
           </>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
+import { SearchX } from 'lucide-react'
 import { getCardBySlug } from '@/api/cards'
 import { fromB64 } from '@/lib/b64'
 import type { Card } from '@/lib/database.types'
@@ -71,7 +72,7 @@ export default function PublicCardPage() {
         <PublicCardView card={card} />
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 24, textAlign: 'center', position: 'relative', zIndex: 1 }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>🔍</div>
+          <div style={{ color: 'var(--muted2)', marginBottom: 16 }}><SearchX size={56} strokeWidth={1.5} /></div>
           <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>Карточка не найдена</h2>
           <p style={{ color: 'var(--muted)', fontSize: 14 }}>Возможно, ссылка устарела или карточка была скрыта</p>
         </div>

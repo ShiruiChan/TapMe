@@ -1,6 +1,6 @@
 import { useState, useRef, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Camera } from 'lucide-react'
+import { ArrowLeft, Camera, QrCode } from 'lucide-react'
 import { useMyCard, useUpsertCard, uploadAvatar } from '@/api/cards'
 import { useAuth } from '@/store/auth'
 import { PALETTE, hexRgb } from '@/lib/utils'
@@ -256,7 +256,7 @@ export default function CardEditor() {
             className="btn btn-secondary"
             onClick={() => openModal('Моя карточка', <QRModal card={card} />)}
           >
-            📱&nbsp; QR и предпросмотр
+            <QrCode size={16} /> QR и предпросмотр
           </button>
         )}
 

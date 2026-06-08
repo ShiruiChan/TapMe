@@ -55,6 +55,7 @@ export function Sidebar({ tabs }: SidebarProps) {
               key={tab.key}
               onClick={() => navigate(`/${tab.key}`)}
               whileTap={{ scale: 0.97 }}
+              className={isActive ? '' : 'sidebar-nav-btn'}
               style={{
                 display: 'flex',
                 alignItems: 'center',

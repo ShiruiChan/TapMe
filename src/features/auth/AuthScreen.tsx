@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Send } from 'lucide-react'
 import { useAuth } from '@/store/auth'
 import { useToast } from '@/components/ui/Toast'
 
@@ -103,7 +103,7 @@ export default function AuthScreen() {
         className="btn btn-secondary"
         onClick={() => toast('Telegram-авторизация скоро будет доступна')}
       >
-        ✈️&nbsp; Войти через Telegram
+        <Send size={16} /> Войти через Telegram
       </button>
     </div>
   )
