@@ -1,0 +1,83 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── Animations ─── */
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(18px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes fadeIn   { from { opacity: 0 } to { opacity: 1 } }
+@keyframes orb1     { 0%,100% { transform: translate(0,0) scale(1) } 50% { transform: translate(40px,-30px) scale(1.15) } }
+@keyframes orb2     { 0%,100% { transform: translate(0,0) scale(1) } 50% { transform: translate(-30px,40px) scale(1.1) } }
+@keyframes orb3     { 0%,100% { transform: translate(0,0) scale(1) } 33% { transform: translate(25px,20px) scale(1.08) } 66% { transform: translate(-20px,-15px) scale(0.95) } }
+@keyframes spin     { to { transform: rotate(360deg) } }
+@keyframes popIn    { 0% { opacity: 0; transform: scale(0.85) } 100% { opacity: 1; transform: scale(1) } }
+@keyframes pulse    { 0%,100% { opacity: 1 } 50% { opacity: 0.5 } }
+
+.anim-up { animation: fadeUp 0.3s ease both; }
+.anim-in { animation: fadeIn 0.25s ease both; }
+
+/* ─── Orbs background ─── */
+.orbs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.18;
+}
+.orb-1 { width: 340px; height: 340px; background: #6366f1; top: -100px; right: -80px; animation: orb1 14s ease-in-out infinite; }
+.orb-2 { width: 280px; height: 280px; background: #06b6d4; bottom: 20%; left: -100px; animation: orb2 18s ease-in-out infinite; }
+.orb-3 { width: 200px; height: 200px; background: #8b5cf6; top: 45%; right: -60px; animation: orb3 22s ease-in-out infinite; }
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ─── App layout ─── */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* desktop layout */
+@media (min-width: 768px) {
+  .app-layout {
+    padding-left: var(--sidebar-w);
+  }
+  .main-content {
+    flex: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 40px;
+    width: 100%;
+  }
+}
+
+/* mobile layout */
+@media (max-width: 767px) {
+  .main-content {
+    flex: 1;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0 20px calc(var(--nav-h) + 32px + var(--safe-b));
+  }
+}
