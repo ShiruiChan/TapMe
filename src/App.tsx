@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from '@/features/auth/AuthProvider'
 import { ToastProvider } from '@/components/ui/Toast'
@@ -53,6 +53,26 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+function RootRedirect() {
+  const [searchParams] = useSearchParams()
+  const { user, loading, profile } = useAuth()
+
+  // Legacy shared card via ?d=base64 — показываем публичную карточку
+  if (searchParams.get('d')) {
+    const PublicCardPage = lazy(() => import('@/pages/PublicCardPage'))
+    return (
+      <Suspense fallback={<LoadingScreen />}>
+        <PublicCardPage />
+      </Suspense>
+    )
+  }
+
+  if (loading) return <LoadingScreen />
+  if (!user) return <Navigate to="/auth" replace />
+  if (!profile?.onboarded) return <Navigate to="/onboarding" replace />
+  return <Navigate to="/dashboard" replace />
+}
+
 function PublicGuard({ children }: { children: React.ReactNode }) {
   const { user, loading, profile } = useAuth()
 
@@ -73,7 +93,9 @@ export default function App() {
                 <Routes>
                   {/* Public card routes */}
                   <Route path="/c/:slug" element={<PublicCardPage />} />
-                  <Route path="/" element={<PublicCardPage />} />
+
+                  {/* Root: redirect based on auth, or show legacy ?d= card */}
+                  <Route path="/" element={<RootRedirect />} />
 
                   {/* Auth */}
                   <Route path="/auth" element={
