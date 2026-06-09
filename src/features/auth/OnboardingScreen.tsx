@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CreditCard, Users, Zap, Camera, UserCircle } from 'lucide-react'
@@ -13,8 +13,14 @@ const TOTAL_STEPS = 3
 export default function OnboardingScreen() {
   const [step, setStep] = useState(1)
   const [data, setData] = useState({
-    name: '', role: '', tagline: '', skills: '', color: '6366f1', avatarFile: null as File | null, avatarPreview: '',
+    name: user?.user_metadata?.full_name || profile?.full_name || '',
+    role: '', tagline: '', skills: '', color: '6366f1', avatarFile: null as File | null, avatarPreview: '',
   })
+
+  useEffect(() => {
+    const n = profile?.full_name || user?.user_metadata?.full_name
+    if (n) setData(d => d.name ? d : { ...d, name: n })
+  }, [profile?.full_name, user?.user_metadata?.full_name])
   const fileRef = useRef<HTMLInputElement>(null)
   const { user, profile, refreshProfile } = useAuth()
   const upsert = useUpsertCard()
@@ -39,19 +45,23 @@ export default function OnboardingScreen() {
     if (data.avatarFile) {
       try { avatarUrl = await uploadAvatar(user.id, data.avatarFile) } catch { /* ignore */ }
     }
-    await upsert.mutateAsync({
-      name: data.name || profile?.full_name || '',
-      role: data.role,
-      tagline: data.tagline,
-      skills: data.skills,
-      color_hex: data.color,
-      company: 'Lory.Lab',
-      email: user.email || '',
-      avatar_url: avatarUrl || undefined,
-    })
-    await supabase.from('profiles').update({ onboarded: true, full_name: data.name || profile?.full_name } as never).eq('id', user.id)
-    await refreshProfile()
-    navigate('/dashboard')
+    try {
+      await upsert.mutateAsync({
+        name: data.name || profile?.full_name || '',
+        role: data.role,
+        tagline: data.tagline,
+        skills: data.skills,
+        color_hex: data.color,
+        company: 'Lory.Lab',
+        email: user.email || '',
+        avatar_url: avatarUrl || undefined,
+      })
+      await supabase.from('profiles').update({ onboarded: true, full_name: data.name || profile?.full_name } as never).eq('id', user.id)
+      await refreshProfile()
+      navigate('/dashboard')
+    } catch {
+      toast('Ошибка при сохранении. Проверь соединение и попробуй ещё раз.')
+    }
   }
 
   async function skip() {
