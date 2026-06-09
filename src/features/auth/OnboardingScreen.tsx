@@ -11,21 +11,21 @@ import { useToast } from '@/components/ui/Toast'
 const TOTAL_STEPS = 3
 
 export default function OnboardingScreen() {
+  const { user, profile, refreshProfile } = useAuth()
   const [step, setStep] = useState(1)
   const [data, setData] = useState({
     name: user?.user_metadata?.full_name || profile?.full_name || '',
     role: '', tagline: '', skills: '', color: '6366f1', avatarFile: null as File | null, avatarPreview: '',
   })
+  const fileRef = useRef<HTMLInputElement>(null)
+  const upsert = useUpsertCard()
+  const toast = useToast()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const n = profile?.full_name || user?.user_metadata?.full_name
     if (n) setData(d => d.name ? d : { ...d, name: n })
   }, [profile?.full_name, user?.user_metadata?.full_name])
-  const fileRef = useRef<HTMLInputElement>(null)
-  const { user, profile, refreshProfile } = useAuth()
-  const upsert = useUpsertCard()
-  const toast = useToast()
-  const navigate = useNavigate()
 
   function stepDots() {
     return (
