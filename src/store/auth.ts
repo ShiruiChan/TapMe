@@ -11,6 +11,7 @@ export interface AuthContextValue {
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
+  patchProfile: (partial: Partial<Profile>) => void
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null)

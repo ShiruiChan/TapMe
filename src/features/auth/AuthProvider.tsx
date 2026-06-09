@@ -59,8 +59,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (user) await fetchProfile(user.id)
   }, [user, fetchProfile])
 
+  const patchProfile = useCallback((partial: Partial<Profile>) => {
+    setProfile(prev => prev ? { ...prev, ...partial } : null)
+  }, [])
+
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signIn, signUp, signOut, refreshProfile }}>
+    <AuthContext.Provider value={{ user, session, profile, loading, signIn, signUp, signOut, refreshProfile, patchProfile }}>
       {children}
     </AuthContext.Provider>
   )

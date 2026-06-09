@@ -11,7 +11,7 @@ import { useToast } from '@/components/ui/Toast'
 const TOTAL_STEPS = 3
 
 export default function OnboardingScreen() {
-  const { user, profile, refreshProfile } = useAuth()
+  const { user, profile, patchProfile } = useAuth()
   const [step, setStep] = useState(1)
   const [data, setData] = useState({
     name: user?.user_metadata?.full_name || profile?.full_name || '',
@@ -57,7 +57,7 @@ export default function OnboardingScreen() {
         avatar_url: avatarUrl || undefined,
       })
       await supabase.from('profiles').update({ onboarded: true, full_name: data.name || profile?.full_name } as never).eq('id', user.id)
-      await refreshProfile()
+      patchProfile({ onboarded: true } as never)
       navigate('/dashboard')
     } catch {
       toast('Ошибка при сохранении. Проверь соединение и попробуй ещё раз.')
@@ -67,7 +67,7 @@ export default function OnboardingScreen() {
   async function skip() {
     if (!user) return
     await supabase.from('profiles').update({ onboarded: true } as never).eq('id', user.id)
-    await refreshProfile()
+    patchProfile({ onboarded: true } as never)
     navigate('/dashboard')
   }
 
